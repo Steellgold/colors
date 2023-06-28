@@ -120,12 +120,6 @@
           <p class="text-gray-300">{handleInformations(selectedColor).hex}</p>
         </div>
       </div>
-
-      <hr class="my-4 border-gray-700" />
-
-      <p class="text-gray-300">
-        Here a list of colors that you can use in your project with the color you choose.
-      </p>
     {/if}
 
     <div class="flex">
@@ -136,8 +130,8 @@
       </button>
 
       <button
-        class="mt-4 ml-2 w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300">
-        Save to the list
+        class="mt-4 ml-2 w-full px-3 py-2 rounded-lg border border-slate-600 bg-slate-700 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300">
+        Save (Soon)
       </button>
     </div>
   </div>
