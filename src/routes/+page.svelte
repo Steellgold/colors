@@ -130,7 +130,8 @@
       </button>
 
       <button
-        class="mt-4 ml-2 w-full px-3 py-2 rounded-lg border border-slate-600 bg-slate-700 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300">
+        class="mt-4 ml-2 w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 transition-colors duration-300 opacity-50"
+        disabled>
         Save (Soon)
       </button>
     </div>
