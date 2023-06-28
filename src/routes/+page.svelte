@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ColorPicker from "svelte-awesome-color-picker";
+  
   let color: string = "#3c9df3";
   let selectedColor: string | null = null;
   let variationLimit: number = 20;
@@ -9,30 +11,36 @@
     hex: string;
   };
 
-  function generateColorShades(hexCode: string, numShades: number): string[] {
-  const shades: string[] = [];
-  
-  const r = parseInt(hexCode.slice(1, 3), 16);
-  const g = parseInt(hexCode.slice(3, 5), 16);
-  const b = parseInt(hexCode.slice(5, 7), 16);
-  
-  const increment = Math.floor(255 / (numShades - 1));
-  
-  for (let i = 0; i < numShades; i++) {
-    const newR = Math.max(r - i * increment, 0);
-    const newG = Math.max(g - i * increment, 0);
-    const newB = Math.max(b - i * increment, 0);
+  const generateColorShades = (hexCode: string, numShades: number): string[] => {
+    const shades: string[] = [];
     
-    const shade = `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
+    const r = parseInt(hexCode.slice(1, 3), 16);
+    const g = parseInt(hexCode.slice(3, 5), 16);
+    const b = parseInt(hexCode.slice(5, 7), 16);
+    
+    const increment = Math.floor(255 / (numShades - 1));
+    
+    for (let i = 0; i < numShades; i++) {
+      const newR = Math.max(r - i * increment, 0);
+      const newG = Math.max(g - i * increment, 0);
+      const newB = Math.max(b - i * increment, 0);
+      
+      const shade = `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
 
-    if (shades.includes(shade)) continue;
-    shades.push(shade);
+      if (shades.includes(shade)) continue;
+      shades.push(shade);
+    }
+    
+    return shades;
   }
-  
-  return shades;
-}
 
-  function handleInformations(hexColor: string): Color {
+  const handleInformations = (hexColor: string | null): Color => {
+    if (!hexColor) return {
+      rgb: "rgb(0, 0, 0)",
+      hsl: "hsl(0, 0, 0)",
+      hex: "#000000"
+    };
+
     const rgb = hexColor
       .replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
       , (m, r, g, b) => "#" + r + r + g + g + b + b)
@@ -54,6 +62,27 @@
       hsl: `hsl(${hsl})`,
       hex: hexColor
     };
+  }
+
+  const generateRandomColor = (): string => {
+    const randomColor = Math.floor(Math.random()*16777215).toString(16);
+    return `#${randomColor}`;
+  }
+
+  let copied: boolean = false;
+
+  const handleCopy = async (text: string): Promise<void> => {
+    navigator.clipboard.writeText(text);
+    copied = true;
+
+    setTimeout(() => {
+      copied = false;
+    }, 2000);
+  }
+
+  const handleResetColor = (): void => {
+    color = generateRandomColor();
+    selectedColor = null;
   }
 </script>
 
@@ -89,10 +118,14 @@
           Default
         </button>
       {/if}
+
+      <ColorPicker hex={color} label="" on:input={e => color = e.detail.hex} />
     </div>
 
     <div class="flex mt-4 items-center justify-center">
       {#each generateColorShades(color, variationLimit) as variant}
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div
           class="w-full h-20"
           on:click={() => selectedColor = variant}
@@ -101,7 +134,7 @@
       {/each}
     </div>
 
-    {#if selectedColor !== null}
+    {#if selectedColor && selectedColor !== null}
       <hr class="my-4 border-gray-700" />
 
       <div class="flex items-center mt-4 gap-2">
@@ -109,23 +142,39 @@
         
         <div class="flex flex-col">
           <p class="text-gray-100 font-bold">RGB</p>
-          <p class="text-gray-300">{handleInformations(selectedColor).rgb}</p>
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+          <p class="text-gray-300 cursor-pointer" on:click={() => handleCopy(handleInformations(selectedColor).rgb)}>
+            {handleInformations(selectedColor).rgb}
+          </p>
         </div>
         <div class="flex flex-col">
           <p class="text-gray-100 font-bold">HSL</p>
-          <p class="text-gray-300">{handleInformations(selectedColor).hsl}</p>
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+          <p class="text-gray-300 cursor-pointer" on:click={() => handleCopy(handleInformations(selectedColor).hsl)}>
+            {handleInformations(selectedColor).hsl}
+          </p>
         </div>
         <div class="flex flex-col">
           <p class="text-gray-100 font-bold">HEX</p>
-          <p class="text-gray-300">{handleInformations(selectedColor).hex}</p>
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+          <p class="text-gray-300 cursor-pointer" on:click={() => handleCopy(handleInformations(selectedColor).hex)}>
+            {handleInformations(selectedColor).hex}
+          </p>
         </div>
       </div>
+    {/if}
+
+    {#if copied}
+      <p class="mt-4 text-center text-green-500">Copied!</p>
     {/if}
 
     <div class="flex">
       <button
         class="mt-4 w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
-        on:click={() => selectedColor = null}>
+        on:click={() => handleResetColor()}>
         Reset
       </button>
 
@@ -135,5 +184,9 @@
         Save (Soon)
       </button>
     </div>
+  </div>
+
+  <div class="mt-6 text-center text-gray-400">
+    <p>Made with ❤️ by <a class="text-gray-200" href="https://github.com/Steellgold">Steellgold</a></p>
   </div>
 </div>
