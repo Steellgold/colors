@@ -1,20 +1,21 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from "./$types";
 
-export const GET: RequestHandler = async ({ cookies }) => {
+export const GET: RequestHandler = ({ cookies }) => {
   const favorites = cookies.get("favorites");
   if (!favorites) {
     cookies.set("favorites", "[]");
     return new Response("[]");
   }
-  
+
   return new Response(favorites);
 };
 
-export const POST: RequestHandler = async ({ cookies, url }) => {
+export const POST: RequestHandler = ({ cookies, url }) => {
   const urlSearchParams = new URLSearchParams(url.search);
   const color = urlSearchParams.get("color");
 
-  if (!color) return new Response(JSON.parse("No color provided"));
+  if (!color) return new Response(JSON.stringify("No color provided"));
+
   const cookie = cookies.get("favorites");
 
   if (!cookie) {
@@ -22,6 +23,7 @@ export const POST: RequestHandler = async ({ cookies, url }) => {
     return new Response(JSON.stringify([color]));
   }
 
+  /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
   const favorites: string[] = JSON.parse(cookie);
 
   if (favorites.includes(color)) {

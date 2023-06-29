@@ -1,9 +1,10 @@
-module.exports = {
+export default {
 	root: true,
 	extends: [
 		'eslint:recommended',
 		'plugin:@typescript-eslint/recommended',
-		'plugin:svelte/recommended'
+		'plugin:svelte/recommended',
+		'@bluzzi'
 	],
 	parser: '@typescript-eslint/parser',
 	plugins: ['@typescript-eslint'],

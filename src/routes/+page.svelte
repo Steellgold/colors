@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { colorInfo, lightToDark } from "../lib/utils";
-  import { IconStar } from "$lib/icons";
+  import { IconPlus, IconCSS } from "$lib/icons";
+  import { Input } from "$lib/components/input";
   import ColorPicker from "svelte-awesome-color-picker";
   
-  let color: string = "#3c9df3";
+  let color = "#3c9df3";
   let selectedColor: string | null = null;
-  let variationLimit: number = 14;
+  let variationLimit = 14;
 
   let favorites: string[] = [];
   $: favorites = [];
@@ -23,7 +24,7 @@
     return "#" + random.toString(16);
   }
 
-  let copied: boolean = false;
+  let copied = false;
 
   const handleCopy = async (text: string): Promise<void> => {
     navigator.clipboard.writeText(text);
@@ -57,27 +58,16 @@
     <h2 class="text-2xl font-bold text-center text-gray-100">Choose a color</h2>
 
     <div class="flex items-center mt-4 gap-2">
-      <label for="color" class="sr-only">Color</label>
-      <input
-        type="text"
-        id="color"
-        class="w-full px-3 py-2 border rounded-lg border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
-        bind:value={color}
-      />
-
-      <label for="variationLimit" class="sr-only">Variation limit</label>
-      <input
-        type="number"
-        id="variationLimit"
-        class="px-3 py-2 border rounded-lg border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
-        min="2"
-        step="2"
-        max="26"
-        bind:value={variationLimit}
-      />
-
+      <Input full={true} placeholder="#ffffff" bind:value={color} />
+      <Input type="number" min={2} max={26} step={2} placeholder="4" bind:value={variationLimit} />
       <ColorPicker hex={color} label="" on:input={e => color = e.detail.hex} isDark={true} />
       <style>
+        @media (max-width: 640px) {
+          .isOpen {
+            right: -30px;
+          }
+        }
+
         .isOpen.isOpen {
           background-color: #1f2937;
           border: 1px solid #334155;
@@ -164,9 +154,9 @@
 
       {#if selectedColor !== null}
         <button
-          class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300 hover:text-yellow-400"
+          class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300 hover:text-slate-300"
           on:click={() => addToFavorites()}>
-          <IconStar />
+          <IconPlus />
         </button>
       {/if}
     </div>
