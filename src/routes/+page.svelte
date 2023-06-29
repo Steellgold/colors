@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { colorInfo, lightToDark } from "../lib/utils";
   import ColorPicker from "svelte-awesome-color-picker";
+  import { IconStar } from "$lib/icons";
   
   let color: string = "#3c9df3";
   let selectedColor: string | null = null;
@@ -56,14 +57,18 @@
     <h2 class="text-2xl font-bold text-center text-gray-100">Choose a color</h2>
 
     <div class="flex items-center mt-4 gap-2">
+      <label for="color" class="sr-only">Color</label>
       <input
         type="text"
+        id="color"
         class="w-full px-3 py-2 border rounded-lg border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
         bind:value={color}
       />
 
+      <label for="variationLimit" class="sr-only">Variation limit</label>
       <input
         type="number"
+        id="variationLimit"
         class="px-3 py-2 border rounded-lg border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
         min="2"
         step="2"
@@ -150,7 +155,7 @@
       </div>
     {/if}
 
-    <div class="mt-4 flex">
+    <div class="mt-4 flex gap-2">
       <button
         class="w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
         on:click={() => handleResetColor()}>
@@ -159,9 +164,9 @@
 
       {#if selectedColor !== null}
         <button
-          class="w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
+          class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300 hover:text-yellow-400"
           on:click={() => addToHistory()}>
-          Save
+          <IconStar />
         </button>
       {/if}
     </div>
@@ -173,7 +178,7 @@
   
   <div class="fixed md:absolute bottom-0 sm:bottom-auto right-0 md:top-0 z-10 gap-4 p-4">
     <a href="https://www.buymeacoffee.com/steellg0ld" class="hover:opacity-75 transition-opacity duration-300" target="_blank">
-      <img class="h-10" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee">
+      <img class="h-10" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="150" height="40" />
     </a>
   </div>
 </div>
