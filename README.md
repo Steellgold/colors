@@ -1,1 +1,1 @@
-![image](https://cdn.discordapp.com/attachments/1124071436487757884/1124071436613603378/image.png)
+![image](https://github.com/Steellgold/colors/assets/51505384/94ad6fb6-2b09-4c99-8cfa-24c5a16997dd)
