@@ -1,71 +1,14 @@
 <script lang="ts">
   import ColorPicker from "svelte-awesome-color-picker";
+  import { colorInfo, lightToDark } from "../lib/utils";
+  import { IconTestPipe, IconTestPipe2 } from "$lib/icons";
   
   let color: string = "#3c9df3";
   let selectedColor: string | null = null;
-  let variationLimit: number = 20;
-
-  type Color = {
-    rgb: string;
-    hsl: string;
-    hex: string;
-  };
-
-  const generateColorShades = (hexCode: string, numShades: number): string[] => {
-    const shades: string[] = [];
-    
-    const r = parseInt(hexCode.slice(1, 3), 16);
-    const g = parseInt(hexCode.slice(3, 5), 16);
-    const b = parseInt(hexCode.slice(5, 7), 16);
-    
-    const increment = Math.floor(255 / (numShades - 1));
-    
-    for (let i = 0; i < numShades; i++) {
-      const newR = Math.max(r - i * increment, 0);
-      const newG = Math.max(g - i * increment, 0);
-      const newB = Math.max(b - i * increment, 0);
-      
-      const shade = `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
-
-      if (shades.includes(shade)) continue;
-      shades.push(shade);
-    }
-    
-    return shades;
-  }
-
-  const handleInformations = (hexColor: string | null): Color => {
-    if (!hexColor) return {
-      rgb: "rgb(0, 0, 0)",
-      hsl: "hsl(0, 0, 0)",
-      hex: "#000000"
-    };
-
-    const rgb = hexColor
-      .replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
-      , (m, r, g, b) => "#" + r + r + g + g + b + b)
-      .substring(1)
-      .match(/.{2}/g)
-      ?.map(x => parseInt(x, 16))
-      .join(", ");
-    
-    const hsl = hexColor
-      .replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
-      , (m, r, g, b) => "#" + r + r + g + g + b + b)
-      .substring(1)
-      .match(/.{2}/g)
-      ?.map(x => (parseInt(x, 16) / 255).toFixed(3))
-      .join(", ");
-
-    return {
-      rgb: `rgb(${rgb})`,
-      hsl: `hsl(${hsl})`,
-      hex: hexColor
-    };
-  }
+  let variationLimit: number = 14;
 
   const generateRandomColor = (): string => {
-    const randomColor = Math.floor(Math.random()*16777215).toString(16);
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
     return `#${randomColor}`;
   }
 
@@ -97,39 +40,39 @@
         bind:value={color}
       />
 
-      {#if variationLimit !== 100}
-        <input
-          type="number"
-          class="px-3 py-2 border rounded-lg border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
-          min="2"
-          max="100"
-          bind:value={variationLimit}
-        />
+      <input
+        type="number"
+        class="px-3 py-2 border rounded-lg border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
+        min="2"
+        step="2"
+        max="26"
+        bind:value={variationLimit}
+      />
 
-        <button
-          class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
-          on:click={() => variationLimit = 100}>
-          Fluid
-        </button>
-      {:else}
-        <button
-          class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
-          on:click={() => variationLimit = 20}>
-          Default
-        </button>
-      {/if}
-
-      <ColorPicker hex={color} label="" on:input={e => color = e.detail.hex} />
+      <ColorPicker hex={color} label="" on:input={e => color = e.detail.hex} isDark={true} />
+      <style>
+        .isOpen.isOpen {
+          background-color: #1f2937;
+          border: 1px solid #334155;
+          
+          .text-input {
+            display: none;
+          }
+          .slider-wrapper:nth-child(3) {
+            display: none;
+          }
+        }
+      </style>
     </div>
 
     <div class="flex mt-4 items-center justify-center">
-      {#each generateColorShades(color, variationLimit) as variant}
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <div
-          class="w-full h-20"
-          on:click={() => selectedColor = variant}
-          style="background-color: {variant}">
+      {#each lightToDark(color, variationLimit) as variant}
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- svelte-ignore a11y-no-static-element-interactions -->
+          <div
+            class="w-full h-20"
+            on:click={() => selectedColor = variant}
+            style="background-color: {variant}">
         </div>
       {/each}
     </div>
@@ -144,24 +87,24 @@
           <p class="text-gray-100 font-bold">RGB</p>
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-          <p class="text-gray-300 cursor-pointer" on:click={() => handleCopy(handleInformations(selectedColor).rgb)}>
-            {handleInformations(selectedColor).rgb}
+          <p class="text-gray-300 cursor-pointer" on:click={() => handleCopy(colorInfo(selectedColor).rgb)}>
+            {colorInfo(selectedColor).rgb}
           </p>
         </div>
         <div class="flex flex-col">
           <p class="text-gray-100 font-bold">HSL</p>
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-          <p class="text-gray-300 cursor-pointer" on:click={() => handleCopy(handleInformations(selectedColor).hsl)}>
-            {handleInformations(selectedColor).hsl}
+          <p class="text-gray-300 cursor-pointer" on:click={() => handleCopy(colorInfo(selectedColor).hsl)}>
+            {colorInfo(selectedColor).hsl}
           </p>
         </div>
         <div class="flex flex-col">
           <p class="text-gray-100 font-bold">HEX</p>
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-          <p class="text-gray-300 cursor-pointer" on:click={() => handleCopy(handleInformations(selectedColor).hex)}>
-            {handleInformations(selectedColor).hex}
+          <p class="text-gray-300 cursor-pointer" on:click={() => handleCopy(colorInfo(selectedColor).hex)}>
+            {colorInfo(selectedColor).hex}
           </p>
         </div>
       </div>
