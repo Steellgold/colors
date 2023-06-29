@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { colorInfo, lightToDark } from "../lib/utils";
-  import ColorPicker from "svelte-awesome-color-picker";
   import { IconStar } from "$lib/icons";
+  import ColorPicker from "svelte-awesome-color-picker";
   
   let color: string = "#3c9df3";
   let selectedColor: string | null = null;
