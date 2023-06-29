@@ -8,12 +8,12 @@
   let selectedColor: string | null = null;
   let variationLimit: number = 14;
 
-  let history: string[] = [];
-  $: history = [];
+  let favorites: string[] = [];
+  $: favorites = [];
 
   onMount(async () => {
-    const res = await fetch("/api/history");
-    history = await res.json();
+    const res = await fetch("/api/favorites");
+    favorites = await res.json();
   });
 
   const generateRandomColor = (): string => {
@@ -39,15 +39,15 @@
     selectedColor = null;
   }
 
-  const addToHistory = async (): Promise<void> => {
+  const addToFavorites = async (): Promise<void> => {
     if (color !== null) {
       if (selectedColor == null) return;
 
-      let res = await fetch("/api/history?color=" + selectedColor.replace("#", ""), {
+      let res = await fetch("/api/favorites?color=" + selectedColor.replace("#", ""), {
         method: "POST",
       });
 
-      history = await res.json();
+      favorites = await res.json();
     }
   }
 </script>
@@ -141,9 +141,9 @@
       <p class="mt-4 text-center text-green-500">Copied!</p>
     {/if}
 
-    {#if history.length >= 1}
+    {#if favorites.length >= 1}
       <div class="flex mt-4 gap-2">
-        {#each history.slice(0, 10) as variant}
+        {#each favorites.slice(0, 10) as variant}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
           <div
@@ -165,7 +165,7 @@
       {#if selectedColor !== null}
         <button
           class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300 hover:text-yellow-400"
-          on:click={() => addToHistory()}>
+          on:click={() => addToFavorites()}>
           <IconStar />
         </button>
       {/if}
