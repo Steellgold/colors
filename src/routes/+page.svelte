@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ColorPicker from "svelte-awesome-color-picker";
   import { colorInfo, lightToDark } from "../lib/utils";
+  import ColorPicker from "svelte-awesome-color-picker";
   
   let color: string = "#3c9df3";
   let selectedColor: string | null = null;
