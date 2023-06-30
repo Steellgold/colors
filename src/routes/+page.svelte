@@ -1,13 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { colorInfo, lightToDark, randomColor } from "../lib/utils";
-  import { IconPlus, IconCSS } from "$lib/icons";
+  import { colorInfo, getCSSBackgroundLinearGradient, lightToDark, randomColor } from "../lib/utils";
+  import { IconPlus, IconCSS, IconCodeOff, IconTailwind } from "$lib/icons";
   import { Input } from "$lib/components/input";
   import ColorPicker from "svelte-awesome-color-picker";
   
   let color = "";
   let selectedColor: string | null = null;
   let variationLimit = 14;
+  let showCSS: "css" | "tailwind" | null = 'tailwind';
+
+  $: colors = lightToDark(color, variationLimit);
 
   let favorites: string[] = [];
   $: favorites = [];
@@ -45,6 +48,16 @@
       favorites = await res.json();
     }
   }
+
+  const changeShowCSS = (): void => {
+    if (showCSS === null) {
+      showCSS = "css";
+    } else if (showCSS === "css") {
+      showCSS = "tailwind";
+    } else if (showCSS === "tailwind") {
+      showCSS = null;
+    }
+  }
 </script>
 
 <div class="flex flex-col items-center mx-auto px-3 py-4 lg:py-0">
@@ -54,6 +67,17 @@
     <div class="flex items-center mt-4 gap-2">
       <Input defaultValue={color} full={true} placeholder="#ffffff" bind:value={color} />
       <Input defaultValue={variationLimit} type="number" min={2} max={26} step={2} placeholder="4" bind:value={variationLimit} />
+      <button
+        class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300 hover:text-slate-300"
+        on:click={(() => changeShowCSS())}>
+        {#if showCSS === null}
+          <IconCSS />
+        {:else if showCSS === "css"}
+          <IconTailwind />
+        {:else if showCSS === "tailwind"}
+          <IconCodeOff />
+        {/if}
+      </button>
       <ColorPicker hex={color} label="" on:input={e => color = e.detail.hex} isDark={true} />
       <style>
         @media (max-width: 640px) {
@@ -77,17 +101,25 @@
     </div>
 
     {#if color !== ""}
-      <div class="flex mt-4 items-center justify-center">
-        {#each lightToDark(color, variationLimit) as variant}
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <div
-              class="w-full h-20"
-              on:click={() => selectedColor = variant}
-              style="background-color: {variant}">
-          </div>
-        {/each}
-      </div>
+      {#if showCSS !== null}
+        {#if showCSS == "css"}
+          <div style="{getCSSBackgroundLinearGradient(colors, "css")}" class="w-full h-20 mt-4" />
+        {:else if showCSS == "tailwind"}
+          <div class="{getCSSBackgroundLinearGradient(colors, "tailwind")} w-full h-20 mt-4" />
+        {/if}
+      {:else}
+        <div class="flex mt-4 items-center justify-center">
+          {#each colors as variant}
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <!-- svelte-ignore a11y-no-static-element-interactions -->
+              <div
+                class="w-full h-20"
+                on:click={() => selectedColor = variant}
+                style="background-color: {variant}">
+            </div>
+          {/each}
+        </div>
+      {/if}
     {/if}
 
     {#if selectedColor && selectedColor !== null}
@@ -129,7 +161,7 @@
 
     {#if favorites.length >= 1}
       <div class="flex mt-4 gap-2">
-        {#each favorites.slice(0, 10) as variant}
+        {#each favorites.slice(0, 20) as variant}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
           <div
@@ -147,6 +179,19 @@
         on:click={() => handleResetColor()}>
         Reset
       </button>
+
+      {#if showCSS !== null}
+        <button
+          class="w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
+          on:click={() => handleCopy(getCSSBackgroundLinearGradient(colors, showCSS === "css" ? "css" : "tailwind"))}>
+          {#if showCSS == "css"}
+            Copy CSS
+          {:else}
+            Copy TailwindCSS
+          {/if}
+        </button>
+      {/if}
+
 
       {#if selectedColor !== null}
         <button

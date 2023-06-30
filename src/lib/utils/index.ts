@@ -1,1 +1,1 @@
-export { lightToDark, colorInfo, randomColor } from "./color.utils";
+export { lightToDark, colorInfo, randomColor, getCSSBackgroundLinearGradient } from "./color.utils";

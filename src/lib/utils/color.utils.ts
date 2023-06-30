@@ -128,3 +128,9 @@ export const randomColor = (): string => {
   const random = Math.floor(Math.random() * (max - min + 1)) + min;
   return "#" + random.toString(16);
 }
+
+export const getCSSBackgroundLinearGradient = (colors: string[], type: "css" | "tailwind"): string => {
+  if (type == "css") return `background: linear-gradient(95deg, ${colors.join(",")});`;
+  if (type == "tailwind") return "bg-gradient-to-r from-[#ae8dfc] to-[#a580fc]";
+  return "";
+}
