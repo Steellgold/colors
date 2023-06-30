@@ -58,8 +58,8 @@
     <h2 class="text-2xl font-bold text-center text-gray-100">Choose a color</h2>
 
     <div class="flex items-center mt-4 gap-2">
-      <Input full={true} placeholder="#ffffff" bind:value={color} />
-      <Input type="number" min={2} max={26} step={2} placeholder="4" bind:value={variationLimit} />
+      <Input defaultValue={color} full={true} placeholder="#ffffff" bind:value={color} />
+      <Input defaultValue={variationLimit} type="number" min={2} max={26} step={2} placeholder="4" bind:value={variationLimit} />
       <ColorPicker hex={color} label="" on:input={e => color = e.detail.hex} isDark={true} />
       <style>
         @media (max-width: 640px) {

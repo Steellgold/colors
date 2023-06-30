@@ -10,6 +10,8 @@
   export let max: number | null = null;
   export let step: number | null = null;
 
+  export let defaultValue: string | number | null = null;
+
   let id = Math.random().toString(36).substring(2);
 
   function update(event: Event) {
@@ -28,4 +30,5 @@
   step={step}
   class="{full ? "w-full": ""} px-3 py-2 border rounded-lg border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
   on:input={update}
+  {value}
 />
