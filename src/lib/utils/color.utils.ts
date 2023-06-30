@@ -131,6 +131,6 @@ export const randomColor = (): string => {
 
 export const getCSSBackgroundLinearGradient = (colors: string[], type: "css" | "tailwind"): string => {
   if (type == "css") return `background: linear-gradient(95deg, ${colors.join(",")});`;
-  if (type == "tailwind") return "bg-gradient-to-r from-[#ae8dfc] to-[#a580fc]";
+  if (type == "tailwind") return `bg-gradient-to-r from-[${colors[0]}] to-[${colors[colors.length - 1]}]`;
   return "";
 }

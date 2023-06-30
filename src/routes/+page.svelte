@@ -102,10 +102,8 @@
 
     {#if color !== ""}
       {#if showCSS !== null}
-        {#if showCSS == "css"}
+        {#if showCSS !== null}
           <div style="{getCSSBackgroundLinearGradient(colors, "css")}" class="w-full h-20 mt-4" />
-        {:else if showCSS == "tailwind"}
-          <div class="{getCSSBackgroundLinearGradient(colors, "tailwind")} w-full h-20 mt-4" />
         {/if}
       {:else}
         <div class="flex mt-4 items-center justify-center">
