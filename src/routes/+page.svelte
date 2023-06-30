@@ -9,6 +9,7 @@
   let selectedColor: string | null = null;
   let variationLimit = 14;
   let showCSS: "css" | "tailwind" | null = null;
+  let favoritesMax = 10;
 
   $: colors = lightToDark(color, variationLimit);
 
@@ -158,8 +159,8 @@
     {/if}
 
     {#if favorites.length >= 1}
-      <div class="flex mt-4 gap-2">
-        {#each favorites.slice(0, 20) as variant}
+      <div class="flex flex-wrap mt-4 gap-2">
+        {#each favorites.slice(0, favoritesMax) as variant}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
           <div
@@ -168,6 +169,12 @@
             on:click={() => color = "#" + variant}>
           </div>
         {/each}
+
+        {#if favorites.length > favoritesMax}
+          <button class="px-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300 hover:text-slate-300 text-xs" on:click={() => favoritesMax += 10}>
+            show more
+          </button>
+        {/if}
       </div>
     {/if}
 
