@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { colorInfo, lightToDark } from "../lib/utils";
+  import { colorInfo, lightToDark, randomColor } from "../lib/utils";
   import { IconPlus, IconCSS } from "$lib/icons";
   import { Input } from "$lib/components/input";
   import ColorPicker from "svelte-awesome-color-picker";
   
-  let color = "#3c9df3";
+  let color = "";
   let selectedColor: string | null = null;
   let variationLimit = 14;
 
@@ -15,14 +15,8 @@
   onMount(async () => {
     const res = await fetch("/api/favorites");
     favorites = await res.json();
+    color = randomColor();
   });
-
-  const generateRandomColor = (): string => {
-    const min = 0x100000;
-    const max = 0xffffff;
-    const random = Math.floor(Math.random() * (max - min + 1)) + min;
-    return "#" + random.toString(16);
-  }
 
   let copied = false;
 
@@ -36,7 +30,7 @@
   }
 
   const handleResetColor = (): void => {
-    color = generateRandomColor();
+    color = randomColor();
     selectedColor = null;
   }
 
@@ -82,17 +76,19 @@
       </style>
     </div>
 
-    <div class="flex mt-4 items-center justify-center">
-      {#each lightToDark(color, variationLimit) as variant}
-          <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <!-- svelte-ignore a11y-no-static-element-interactions -->
-          <div
-            class="w-full h-20"
-            on:click={() => selectedColor = variant}
-            style="background-color: {variant}">
-        </div>
-      {/each}
-    </div>
+    {#if color !== ""}
+      <div class="flex mt-4 items-center justify-center">
+        {#each lightToDark(color, variationLimit) as variant}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div
+              class="w-full h-20"
+              on:click={() => selectedColor = variant}
+              style="background-color: {variant}">
+          </div>
+        {/each}
+      </div>
+    {/if}
 
     {#if selectedColor && selectedColor !== null}
       <hr class="my-4 border-gray-700" />

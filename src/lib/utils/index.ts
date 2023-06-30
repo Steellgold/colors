@@ -1,1 +1,1 @@
-export { lightToDark, colorInfo } from "./color.utils";
+export { lightToDark, colorInfo, randomColor } from "./color.utils";

@@ -121,3 +121,10 @@ export const colorInfo = (hexColor: string | null): Color => {
     hex: hexColor
   };
 }
+
+export const randomColor = (): string => {
+  const min = 0x100000;
+  const max = 0xffffff;
+  const random = Math.floor(Math.random() * (max - min + 1)) + min;
+  return "#" + random.toString(16);
+}
