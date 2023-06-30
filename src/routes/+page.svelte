@@ -8,7 +8,7 @@
   let color = "";
   let selectedColor: string | null = null;
   let variationLimit = 14;
-  let showCSS: "css" | "tailwind" | null = 'tailwind';
+  let showCSS: "css" | "tailwind" | null = null;
 
   $: colors = lightToDark(color, variationLimit);
 
