@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { colorInfo, getCSSBackgroundLinearGradient, lightToDark, randomColor } from "../lib/utils";
-  import { IconPlus, IconCSS, IconCodeOff, IconTailwind } from "$lib/icons";
+  import { IconPlus, IconCSS, IconCodeOff, IconTailwind, IconMinus } from "$lib/icons";
   import { Input } from "$lib/components/input";
   import ColorPicker from "svelte-awesome-color-picker";
   
@@ -10,6 +10,7 @@
   let variationLimit = 14;
   let showCSS: "css" | "tailwind" | null = null;
   let favoritesMax = 10;
+  let removed = true;
 
   $: colors = lightToDark(color, variationLimit);
 
@@ -47,7 +48,21 @@
       });
 
       favorites = await res.json();
+      selectedColor = null;
     }
+  }
+
+  const removeFromFavorites = async (): Promise<void> => {
+    let res = await fetch("/api/favorites?color=" + color.replace("#", ""), {
+      method: "DELETE",
+    });
+
+    favorites = await res.json();
+    removed = true;
+  }
+
+  const isFavorite = (color: string): boolean => {
+    return favorites.includes(color.replace("#", ""));
   }
 
   const changeShowCSS = (): void => {
@@ -66,11 +81,14 @@
     <h2 class="text-2xl font-bold text-center text-gray-100">Choose a color</h2>
 
     <div class="flex items-center mt-4 gap-2">
-      <Input defaultValue={color} full={true} placeholder="#ffffff" bind:value={color} />
+      <Input max={6} defaultValue={color} full={true} placeholder="#ffffff" bind:value={color} />
       <Input defaultValue={variationLimit} type="number" min={2} max={26} step={2} placeholder="4" bind:value={variationLimit} />
       <button
         class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300 hover:text-slate-300"
-        on:click={(() => changeShowCSS())}>
+        on:click={(() => {
+          changeShowCSS()
+          selectedColor = null
+        })}>
         {#if showCSS === null}
           <IconCSS />
         {:else if showCSS === "css"}
@@ -79,6 +97,7 @@
           <IconCodeOff />
         {/if}
       </button>
+      
       <ColorPicker hex={color} label="" on:input={e => color = e.detail.hex} isDark={true} />
       <style>
         @media (max-width: 640px) {
@@ -103,15 +122,13 @@
 
     {#if color !== ""}
       {#if showCSS !== null}
-        {#if showCSS !== null}
-          <div style="{getCSSBackgroundLinearGradient(colors, "css")}" class="w-full h-20 mt-4" />
-        {/if}
+        <div style="{getCSSBackgroundLinearGradient(colors, "css")}" class="w-full h-20 mt-4" />
       {:else}
         <div class="flex mt-4 items-center justify-center">
           {#each colors as variant}
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <!-- svelte-ignore a11y-no-static-element-interactions -->
-              <div
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div
                 class="w-full h-20"
                 on:click={() => selectedColor = variant}
                 style="background-color: {variant}">
@@ -166,7 +183,11 @@
           <div
             class="w-5 h-5 rounded-full cursor-pointer"
             style="background-color: #{variant}"
-            on:click={() => color = "#" + variant}>
+            on:click={() => {
+              color = "#" + variant
+              selectedColor = "#" + variant
+              removed = false
+            }}>
           </div>
         {/each}
 
@@ -197,13 +218,20 @@
         </button>
       {/if}
 
-
       {#if selectedColor !== null}
-        <button
-          class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300 hover:text-slate-300"
-          on:click={() => addToFavorites()}>
-          <IconPlus />
-        </button>
+        {#if isFavorite(selectedColor) && removed == false}
+          <button
+            class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300 hover:text-slate-300"
+            on:click={() => removeFromFavorites()}>
+            <IconMinus />
+          </button>
+        {:else}
+          <button
+            class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300 hover:text-slate-300"
+            on:click={() => addToFavorites()}>
+            <IconPlus />
+          </button>
+        {/if}
       {/if}
     </div>
   </div>
