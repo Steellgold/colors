@@ -27,8 +27,6 @@
   placeholder={placeholder}
   min={min}
   max={max}
-  maxlength={max}
-  minlength={min}
   step={step}
   class="{full ? "w-full": ""} px-3 py-2 border rounded-lg border-slate-700 bg-slate-800 text-gray-300 focus:outline-none focus:border-slate-500 hover:border-slate-500 transition-colors duration-300"
   on:input={update}
