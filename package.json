@@ -1,7 +1,12 @@
 {
 	"name": "colors",
-	"version": "0.0.1",
-	"private": true,
+	"description": "🎨 Generate variations of your color",
+	"author": "Steellgold",
+	"homepage": "https://colors.steellgold.fr",
+	"repository": "https://github.com/Steellgold/colors",
+	"version": "0.1.0",
+	"private": false,
+	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -31,7 +36,6 @@
 		"vite": "^4.3.6",
 		"vitest": "^0.25.3"
 	},
-	"type": "module",
 	"dependencies": {
 		"@vercel/analytics": "^1.0.1",
 		"cookie-muncher": "^0.4.2"
