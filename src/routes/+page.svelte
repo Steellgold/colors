@@ -241,7 +241,7 @@
   </div>
   
   <div class="fixed md:absolute bottom-0 sm:bottom-auto right-0 md:top-0 z-10 gap-4 p-4">
-    <a href="https://www.buymeacoffee.com/steellg0ld" class="hover:opacity-75 transition-opacity duration-300" target="_blank">
+    <a href="https://www.buymeacoffee.com/steellgold" class="hover:opacity-75 transition-opacity duration-300" target="_blank">
       <img class="h-10" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="150" height="40" />
     </a>
   </div>
